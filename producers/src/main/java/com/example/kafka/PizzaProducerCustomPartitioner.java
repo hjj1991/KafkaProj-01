@@ -5,6 +5,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.clients.producer.internals.DefaultPartitioner;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +15,9 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-public class PizzaProducer {
+public class PizzaProducerCustomPartitioner {
 
-    public static final Logger logger = LoggerFactory.getLogger(PizzaProducer.class);
-
-
+    public static final Logger logger = LoggerFactory.getLogger(PizzaProducerCustomPartitioner.class);
 
     public static void sendPizzaMessage(KafkaProducer<String, String> kafkaProducer,
                                         String topicName, int iterCount,
@@ -83,7 +82,7 @@ public class PizzaProducer {
 
     public static void main(String[] args) {
 
-        String topicName = "pizza-topic";
+        String topicName = "pizza-topic-partitioner";
 
         //KafkaProducer configuration setting
         // null, "hello world"
@@ -94,7 +93,9 @@ public class PizzaProducer {
         props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.28.200:9092");
         props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        props.setProperty(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, "50000");
+//        props.setProperty(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, "50000");
+        props.setProperty(ProducerConfig.PARTITIONER_CLASS_CONFIG, "com.example.kafka.CustomPartitioner");
+        props.setProperty("custom.specialKey", "P001");
 
         //acks setting
         //props.setProperty(ProducerConfig.ACKS_CONFIG, "all");
@@ -106,7 +107,7 @@ public class PizzaProducer {
         //KafkaProducer object creation
         KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(props);
 
-        sendPizzaMessage(kafkaProducer, topicName, -1, 10, 100, 100, false);
+        sendPizzaMessage(kafkaProducer, topicName, -1, 100, 0,0, true);
 
         kafkaProducer.close();
 
