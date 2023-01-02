@@ -48,7 +48,7 @@ public class PizzaProducer {
             if(interIntervalMillis > 0) {
                 try {
                     logger.info("interIntervalMillis:" + interIntervalMillis);
-                    Thread.sleep(intervalMillis);
+                    Thread.sleep(interIntervalMillis);
                 } catch (InterruptedException e) {
                     logger.error(e.getMessage());
                 }
@@ -94,7 +94,7 @@ public class PizzaProducer {
         props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.28.200:9092");
         props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        props.setProperty(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, "50000");
+//        props.setProperty(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, "50000");
 
         //acks setting
         //props.setProperty(ProducerConfig.ACKS_CONFIG, "all");
@@ -106,7 +106,7 @@ public class PizzaProducer {
         //KafkaProducer object creation
         KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(props);
 
-        sendPizzaMessage(kafkaProducer, topicName, -1, 10, 100, 100, false);
+        sendPizzaMessage(kafkaProducer, topicName, -1, 1000, 0, 0, true);
 
         kafkaProducer.close();
 
