@@ -8,13 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class ConsumerCommit {
+public class ConsumerPartitionAssign {
 
-    public static final Logger logger = LoggerFactory.getLogger(ConsumerCommit.class);
+    public static final Logger logger = LoggerFactory.getLogger(ConsumerPartitionAssign.class);
 
     public static void main(String[] args) {
 
@@ -24,14 +25,16 @@ public class ConsumerCommit {
         props.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.28.200:9092");
         props.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group_03");
+        props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group_pizza_assign_seek");
         props.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 //        props.setProperty(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, "60000");
 //        props.setProperty(ConsumerConfig.Au)
 
 
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(props);
-        kafkaConsumer.subscribe(List.of(topicName));
+        TopicPartition topicPartition = new TopicPartition(topicName, 0);
+//        kafkaConsumer.subscribe(List.of(topicName));
+        kafkaConsumer.assign(Arrays.asList(topicPartition));
 
         //main thread 참조 변수
         Thread mainThread = Thread.currentThread();
@@ -53,9 +56,9 @@ public class ConsumerCommit {
 
 //        pollAutoCommit(kafkaConsumer);
 
-//        pollCommitSync(kafkaConsumer);
+        pollCommitSync(kafkaConsumer);
 
-        pollCommitAsync(kafkaConsumer);
+//        pollCommitAsync(kafkaConsumer);
 
 //        kafkaConsumer.close();
     }
