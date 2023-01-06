@@ -46,10 +46,11 @@ public class SimpleProducerSync {
             e.printStackTrace();
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
+        } finally {
+            kafkaProducer.close();
         }
 
-        kafkaProducer.flush();
-        kafkaProducer.close();
+//        kafkaProducer.flush();
 
     }
 }

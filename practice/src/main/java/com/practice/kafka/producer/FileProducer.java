@@ -66,7 +66,20 @@ public class FileProducer {
         }
     }
 
-    private static void sendFileMessage(KafkaProducer<String, String> kafkaProducer, String topicName, String key, String toString) {
+    private static void sendFileMessage(KafkaProducer<String, String> kafkaProducer, String topicName, String key, String value) {
 
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topicName, key, value);
+        logger.info("key:{}, value:{}", key, value);
+        //KafkaProducer message send
+        kafkaProducer.send(producerRecord, (metadata, exception) -> {
+            if(exception == null) {
+                logger.info("\n ###### record metadata received ##### \n" +
+                        "partition:" + metadata.partition() + "\n" +
+                        "offset:" + metadata.offset() + "\n" +
+                        "timestamp:" + metadata.timestamp());
+            } else {
+                logger.error("exception error from broker " + exception.getMessage());
+            }
+        });
     }
 }
