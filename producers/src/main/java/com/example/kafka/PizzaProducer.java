@@ -83,7 +83,7 @@ public class PizzaProducer {
 
     public static void main(String[] args) {
 
-        String topicName = "pizza-topic-p3r3";
+        String topicName = "pizza-topic-stest";
 
         //KafkaProducer configuration setting
         // null, "hello world"
